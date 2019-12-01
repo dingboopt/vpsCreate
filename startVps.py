@@ -72,7 +72,7 @@ retcode = subprocess.call(["ssh-keygen", "-f", "/root/.ssh/known_hosts", "-R" ,p
 
 print retcode
 
-retcode = subprocess.call(["rm", "/root/.ssh/known_hosts"])
+retcode = subprocess.call(["rm", "/data/data/com.termux/files/home/.ssh/known_hosts"])
 
 print retcode
 
