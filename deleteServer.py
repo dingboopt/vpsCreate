@@ -45,4 +45,9 @@ headers = {'Content-type': 'application/json', 'X-Auth-Token': token}
 resp = requests.post(url=url, data=json.dumps(data), headers=headers )
 print resp
 
+retcode = subprocess.call(["ssh-keygen", "-f", "/root/.ssh/known_hosts", "-R" ,publicIp])
+
+print retcode
+
+retcode = subprocess.call(["rm", "/data/data/com.termux/files/home/.ssh/known_hosts"])
 
