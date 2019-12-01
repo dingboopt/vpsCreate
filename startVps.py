@@ -76,4 +76,4 @@ retcode = subprocess.call(["rm", "/root/.ssh/known_hosts"])
 
 print retcode
 
-
+print publicIp
