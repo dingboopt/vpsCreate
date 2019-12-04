@@ -40,7 +40,8 @@ headers = {'Content-type': 'application/json', 'X-Auth-Token': token}
 print resp
 
 url = 'https://vpc.ap-southeast-1.myhuaweicloud.com/v1/d915e1d6c7c845e88f3d4d099e671bee/publicips'
-data = {u'publicip': {u'ip_version': 4, u'ip_address': u'159.138.10.45', u'type': u'5_bgp'}, u'bandwidth': {u'name': u'bandwidth123', u'share_type': u'PER', u'size': 1}}
+data = {u'publicip': {u'ip_version': 4, u'ip_address': u'159.138.10.47', u'type': u'5_bgp'}, u'bandwidth': {u'name': u'bandwidth123', u'share_type': u'PER', u'size': 1}}
+data = {u'publicip': {u'ip_version': 4, u'type': u'5_bgp'}, u'bandwidth': {u'name': u'bandwidth123', u'share_type': u'PER', u'size': 1}}
 
 resp = requests.post(url=url, data=json.dumps(data), headers=headers )
 print resp.text

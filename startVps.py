@@ -20,6 +20,11 @@ if bandwith > '5' or bandwith <'1':
 print "bandwith is:"
 print bandwith
 
+if (len(sys.argv)>4) :
+    ipToBind= sys.argv[4]
+else:
+    ipToBind = None 
+
 url = 'https://iam.ap-southeast-1.myhwclouds.com/v3/auth/tokens'
 headers = {'Content-type': 'application/json'}
 data = {u'auth': {u'scope': {u'project': {u'name': u'ap-southeast-1'}},u'identity': {u'password': {u'user': {u'domain': {u'name': username}, u'password': password, u'name': username}}, u'methods': [u'password']}}}
@@ -31,23 +36,40 @@ headers = resp.headers
 token = headers['x-subject-token']
 print token
 
+headers = {'Content-type': 'application/json', 'X-Auth-Token': token}
+if ipToBind is not None:
+    url = 'https://vpc.ap-southeast-1.myhuaweicloud.com/v1/d915e1d6c7c845e88f3d4d099e671bee/publicips'
+    resp = requests.get(url=url, headers=headers )
+    print resp.text
+    publicips = json.loads(resp.text)['publicips']
+    publicipId = None
+    for i in range(0, len(publicips)):
+        if publicips[i]['public_ip_address'] == ipToBind:
+            publicipId = publicips[i]['id'] 
+            break;
+
 url = 'https://ecs.ap-southeast-1.myhuaweicloud.com/v1.1/d915e1d6c7c845e88f3d4d099e671bee/cloudservers'
 data = {u'server': {u'vpcid': u'abf2d62b-767c-4951-9fca-bbfb42ff8e02', u'name': u'whatthefuck1', u'imageRef': u'cbe0df31-1150-488a-a9b2-612c745e1be0', u'availability_zone': u'ap-southeast-1a', u'nics': [{u'subnet_id': u'3304ec10-204a-4c1a-b49c-bc385bb4c8db'}], u'flavorRef': u's3.small.1', u'adminPass': u'Huawei@123', u'publicip': {u'eip': {u'bandwidth': {u'sharetype': u'PER', u'size': bandwith}, u'iptype': u'5_bgp'}}, u'security_groups': [{u'id': u'9401486d-5a37-4e20-95f1-03ed6f43ca92'}], u'root_volume': {u'volumetype': u'SATA'}}}
 
-headers = {'Content-type': 'application/json', 'X-Auth-Token': token}
+if publicipId is not None:
+    data['publicip'] = {'id': publicipId}
 resp = requests.post(url=url, data=json.dumps(data), headers=headers )
 print resp
 
-url = 'https://vpc.ap-southeast-1.myhuaweicloud.com/v1/d915e1d6c7c845e88f3d4d099e671bee/publicips'
 
-for i in range(0,20):
-    try:
-        resp = requests.get(url=url, headers=headers )
-        publicIp = json.loads(resp.text)['publicips'][0]['public_ip_address']
-        break
-    except Exception as e:
-        print e
-        time.sleep(2)
+if publicipId is None:
+    url = 'https://vpc.ap-southeast-1.myhuaweicloud.com/v1/d915e1d6c7c845e88f3d4d099e671bee/publicips'
+    
+    for i in range(0,20):
+        try:
+            resp = requests.get(url=url, headers=headers )
+            publicIp = json.loads(resp.text)['publicips'][0]['public_ip_address']
+            break
+        except Exception as e:
+            print e
+            time.sleep(2)
+else:
+    publicIp = ipToBind
 
 print publicIp
 
